@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>C-137 // VANO TERMINAL</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        html, body {
+            width: 100%;
+            min-height: 100vh;
+            background-color: #040806;
+            color: #adffcf;
+            overflow-x: hidden;
+        }
+
+        /* Центрирование контейнера по центру экрана */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 12px;
+        }
+
+        /* Эффект ЭЛТ-монитора */
+        .crt-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), 
+                        linear-gradient(90deg, rgba(0, 255, 135, 0.03), rgba(0, 0, 0, 0.01), rgba(96, 239, 255, 0.03));
+            background-size: 100% 3px, 6px 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Контейнер приложения */
+        .container {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            z-index: 1;
+        }
+
+        /* Заголовок профиля */
+        .header-box {
+            text-align: center;
+            border: 2px solid #00ff87;
+            background: rgba(4, 20, 12, 0.85);
+            border-radius: 12px;
+            padding: 16px 10px;
+            box-shadow: 0 0 15px rgba(0, 255, 135, 0.3), inset 0 0 10px rgba(0, 255, 135, 0.15);
+        }
+
+        .header-box h1 {
+            font-size: clamp(1.3rem, 5.5vw, 1.8rem);
+            color: #00ff87;
+            text-shadow: 0 0 10px #00ff87, 0 0 20px #00ff87;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+
+        .header-box p {
+            font-size: 0.7rem;
+            color: #60efff;
+            margin-top: 4px;
+            letter-spacing: 1px;
+        }
+
+        /* Аккордеон-плашки */
+        .accordion-item {
+            background: rgba(6, 18, 12, 0.9);
+            border: 2px solid #00ff87;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .accordion-item.active {
+            border-color: #60efff;
+            box-shadow: 0 0 20px rgba(96, 239, 255, 0.4);
+        }
+
+        /* Кнопка-заголовок плашки */
+        .accordion-btn {
+            width: 100%;
+            padding: 16px 14px;
+            background: transparent;
+            border: none;
+            color: #00ff87;
+            font-size: clamp(0.95rem, 4.2vw, 1.1rem);
+            font-weight: 900;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            outline: none;
+            letter-spacing: 1.5px;
+            transition: color 0.2s ease;
+        }
+
+        .accordion-item.active .accordion-btn {
+            color: #60efff;
+        }
+
+        /* Стрелка индикатор */
+        .arrow {
+            font-size: 1rem;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: #00ff87;
+        }
+
+        .accordion-item.active .arrow {
+            transform: rotate(180deg);
+            color: #60efff;
+        }
+
+        /* Контентная часть плашки */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.45s cubic-bezier(0, 1, 0, 1);
+            background: rgba(2, 10, 6, 0.95);
+            border-top: 1px dashed rgba(0, 255, 135, 0.2);
+        }
+
+        .content-body {
+            padding: 14px;
+            font-size: clamp(0.8rem, 3.5vw, 0.9rem);
+            line-height: 1.5;
+            color: #adffcf;
+        }
+
+        .info-row {
+            margin-bottom: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .info-label {
+            color: #60efff;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .info-val {
+            color: #fff;
+        }
+
+        .badge-fail {
+            display: inline-block;
+            background: rgba(255, 0, 85, 0.2);
+            border: 1px solid #ff0055;
+            color: #ff0055;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-top: 4px;
+        }
+
+        .tg-link-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            background: linear-gradient(135deg, #0088cc, #005588);
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 136, 204, 0.5);
+            border: 1px solid #60efff;
+            letter-spacing: 1px;
+        }
+
+        .tg-link-btn:active {
+            transform: scale(0.97);
+        }
+
+        .rick-quote {
+            border-left: 3px solid #ff0055;
+            padding-left: 10px;
+            margin-top: 8px;
+            color: #ff88a5;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="crt-overlay"></div>
+
+    <div class="container">
+        <div class="header-box">
+            <h1>VANO // C-137</h1>
+            <p>[ ПОРТАЛЬНЫЙ ТЕРМИНАЛ АКТИВЕН ]</p>
+        </div>
+
+        <div class="accordion-item">
+            <button class="accordion-btn" onclick="toggleAccordion(this)">
+                <span>БИОГРАФИЯ</span>
+                <span class="arrow">▼</span>
+            </button>
+            <div class="accordion-content">
+                <div class="content-body">
+                    <div class="info-row">
+                        <span class="info-label">Идентификатор объекта:</span>
+                        <span class="info-val">Иван (VANO)</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Возраст:</span>
+                        <span class="info-val">19 лет</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Геолокация:</span>
+                        <span class="info-val">Родился в России ➔ Дислокация в Абхазии</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Статус в Мультивселенной:</span>
+                        <span class="info-val">Скриптер-неудачник *бууурп*</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Прошлое:</span>
+                        <span class="info-val">Бывший участник RS & бывший "добрячок"</span>
+                    </div>
+                    <div class="badge-fail">СИСТЕМА СЛОМАНА</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <button class="accordion-btn" onclick="toggleAccordion(this)">
+                <span>ТГ КАНАЛ</span>
+                <span class="arrow">▼</span>
+            </button>
+            <div class="accordion-content">
+                <div class="content-body">
+                    <p style="margin-bottom: 8px;">Добро пожаловать в обитель хаоса и мультивселенского треша:</p>
+                    <div class="info-row">
+                        <span class="info-label">Название канала:</span>
+                        <span class="info-val" style="color:#00ff87; font-weight:bold;">Бардак</span>
+                    </div>
+                    <a href="https://t.me/VANOofYOU" target="_blank" class="tg-link-btn">
+                        ПЕРЕЙТИ В БАРДАК ✈️
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <button class="accordion-btn" onclick="toggleAccordion(this)">
+                <span>ФАКТЫ</span>
+                <span class="arrow">▼</span>
+            </button>
+            <div class="accordion-content">
+                <div class="content-body">
+                    <p>Стал предельно депрессивным. В этой всратой реальности больше абсолютно ничего не хочется делать. (мысли:чтобы я не делал я никогда не буду щасливым)</p>
+                    <div class="rick-quote">
+                        "Полное экзистенциальное выгорание и 100% ощущение себя Риком Санчезом из измерения C-137. Вселенной на всё похер, всех..."
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playOpenSound() {
+            initAudio();
+            if (!audioCtx) return;
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(180, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(750, audioCtx.currentTime + 0.14);
+
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.14);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.14);
+        }
+
+        function playCloseSound() {
+            initAudio();
+            if (!audioCtx) return;
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(550, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(90, audioCtx.currentTime + 0.12);
+
+            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.12);
+        }
+
+        function toggleAccordion(btn) {
+            const item = btn.parentElement;
+            const content = item.querySelector('.accordion-content');
+            const isActive = item.classList.contains('active');
+
+            document.querySelectorAll('.accordion-item').forEach(el => {
+                if (el !== item && el.classList.contains('active')) {
+                    el.classList.remove('active');
+                    el.querySelector('.accordion-content').style.maxHeight = null;
+                }
+            });
+
+            if (isActive) {
+                item.classList.remove('active');
+                content.style.maxHeight = null;
+                playCloseSound();
+            } else {
+                item.classList.add('active');
+                content.style.maxHeight = content.scrollHeight + "px";
+                playOpenSound();
+            }
+        }
+    </script>
+</body>
+</html>
