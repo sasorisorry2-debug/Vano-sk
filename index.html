@@ -22,7 +22,6 @@
             overflow-x: hidden;
         }
 
-        /* Центрирование контейнера по центру экрана */
         body {
             display: flex;
             justify-content: center;
@@ -45,11 +44,11 @@
         /* Контейнер приложения */
         .container {
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 14px;
             z-index: 1;
         }
 
@@ -93,14 +92,14 @@
             box-shadow: 0 0 20px rgba(96, 239, 255, 0.4);
         }
 
-        /* Кнопка-заголовок плашки */
+        /* Кнопка-заголовок */
         .accordion-btn {
             width: 100%;
-            padding: 16px 14px;
+            padding: 14px 16px;
             background: transparent;
             border: none;
             color: #00ff87;
-            font-size: clamp(0.95rem, 4.2vw, 1.1rem);
+            font-size: clamp(0.9rem, 4vw, 1rem);
             font-weight: 900;
             text-align: left;
             display: flex;
@@ -116,9 +115,8 @@
             color: #60efff;
         }
 
-        /* Стрелка индикатор */
         .arrow {
-            font-size: 1rem;
+            font-size: 0.9rem;
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             color: #00ff87;
         }
@@ -128,7 +126,7 @@
             color: #60efff;
         }
 
-        /* Контентная часть плашки */
+        /* Контент */
         .accordion-content {
             max-height: 0;
             overflow: hidden;
@@ -139,13 +137,13 @@
 
         .content-body {
             padding: 14px;
-            font-size: clamp(0.8rem, 3.5vw, 0.9rem);
+            font-size: clamp(0.8rem, 3.5vw, 0.88rem);
             line-height: 1.5;
             color: #adffcf;
         }
 
         .info-row {
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             display: flex;
             flex-direction: column;
             gap: 2px;
@@ -156,10 +154,12 @@
             font-size: 0.7rem;
             text-transform: uppercase;
             font-weight: bold;
+            letter-spacing: 1px;
         }
 
         .info-val {
             color: #fff;
+            word-break: break-all;
         }
 
         .badge-fail {
@@ -173,24 +173,89 @@
             margin-top: 4px;
         }
 
-        .tg-link-btn {
-            display: block;
+        /* Кнопки-ссылки */
+        .grid-buttons {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .grid-buttons-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .link-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
             width: 100%;
-            padding: 12px;
-            margin-top: 10px;
-            background: linear-gradient(135deg, #0088cc, #005588);
+            padding: 10px 12px;
             color: #fff;
             text-align: center;
             text-decoration: none;
             font-weight: bold;
+            font-size: 0.8rem;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 136, 204, 0.5);
-            border: 1px solid #60efff;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
+            transition: transform 0.1s ease, filter 0.2s ease;
         }
 
-        .tg-link-btn:active {
+        .link-btn:active {
             transform: scale(0.97);
+        }
+
+        .btn-tg {
+            background: linear-gradient(135deg, #0088cc, #005588);
+            box-shadow: 0 0 8px rgba(0, 136, 204, 0.4);
+            border: 1px solid #60efff;
+        }
+
+        .btn-vk {
+            background: linear-gradient(135deg, #0077ff, #004499);
+            box-shadow: 0 0 8px rgba(0, 119, 255, 0.4);
+            border: 1px solid #60efff;
+        }
+
+        .btn-ds {
+            background: linear-gradient(135deg, #5865F2, #3b429f);
+            box-shadow: 0 0 8px rgba(88, 101, 242, 0.4);
+            border: 1px solid #a5b4fc;
+        }
+
+        .btn-wa {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            box-shadow: 0 0 8px rgba(37, 211, 102, 0.4);
+            border: 1px solid #a8ffb2;
+        }
+
+        .btn-phone {
+            background: linear-gradient(135deg, #1b3a2b, #092015);
+            border: 1px solid #00ff87;
+            color: #00ff87;
+        }
+
+        /* PUBG карточка */
+        .pubg-card {
+            background: rgba(255, 170, 0, 0.08);
+            border: 1px solid #ffaa00;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 4px;
+            box-shadow: 0 0 10px rgba(255, 170, 0, 0.15);
+        }
+
+        .pubg-title {
+            color: #ffaa00;
+            font-weight: bold;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
         }
 
         .rick-quote {
@@ -228,16 +293,16 @@
                         <span class="info-val">19 лет</span>
                     </div>
                     <div class="info-row">
-                        <span class="info-label">Геолокация:</span>
-                        <span class="info-val">Родился в России ➔ Дислокация в Абхазии</span>
+                        <span class="info-label">Дислокация:</span>
+                        <span class="info-val">Россия ➔ Абхазия</span>
                     </div>
                     <div class="info-row">
-                        <span class="info-label">Статус в Мультивселенной:</span>
+                        <span class="info-label">Статус:</span>
                         <span class="info-val">Скриптер-неудачник *бууурп*</span>
                     </div>
                     <div class="info-row">
                         <span class="info-label">Прошлое:</span>
-                        <span class="info-val">Бывший участник RS & бывший "добрячок"</span>
+                        <span class="info-val">Бывший участник RS &  "добрячок"</span>
                     </div>
                     <div class="badge-fail">СИСТЕМА СЛОМАНА</div>
                 </div>
@@ -246,19 +311,111 @@
 
         <div class="accordion-item">
             <button class="accordion-btn" onclick="toggleAccordion(this)">
-                <span>ТГ КАНАЛ</span>
+                <span>КОНТАКТЫ & СВЯЗЬ</span>
                 <span class="arrow">▼</span>
             </button>
             <div class="accordion-content">
                 <div class="content-body">
-                    <p style="margin-bottom: 8px;">Добро пожаловать в обитель хаоса и мультивселенского треша:</p>
                     <div class="info-row">
-                        <span class="info-label">Название канала:</span>
-                        <span class="info-val" style="color:#00ff87; font-weight:bold;">Бардак</span>
+                        <span class="info-label">Телефон / Max:</span>
+                        <span class="info-val">+7 (900) 251-11-54</span>
+                        <span class="info-val">+7 (940) 942-10-77</span>
                     </div>
-                    <a href="https://t.me/VANOofYOU" target="_blank" class="tg-link-btn">
-                        ПЕРЕЙТИ В БАРДАК ✈️
+
+                    <div class="info-row">
+                        <span class="info-label">Email:</span>
+                        <span class="info-val" style="color: #60efff;">Sasorisorry2@gmail.com</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">Discord ID:</span>
+                        <span class="info-val" style="color: #a5b4fc;">liptonchiks</span>
+                    </div>
+
+                    <div class="info-row" style="margin-top: 10px;">
+                        <span class="info-label">Мессенджеры & Соцсети:</span>
+                    </div>
+
+                    <div class="grid-buttons-2col">
+                        <a href="https://t.me/VANO_S7" target="_blank" class="link-btn btn-tg">
+                            TG @VANO_S7
+                        </a>
+                        <a href="https://t.me/The_Russian_snowman" target="_blank" class="link-btn btn-tg">
+                            TG @Snowman
+                        </a>
+                    </div>
+
+                    <div class="grid-buttons" style="margin-top: 8px;">
+                        <a href="https://vk.com/id686629083" target="_blank" class="link-btn btn-vk">
+                            ВКОНТАКТЕ (VK)
+                        </a>
+                        <a href="https://wa.me/79002511154" target="_blank" class="link-btn btn-wa">
+                            WHATSAPP
+                        </a>
+                        <a href="tel:+79002511154" class="link-btn btn-phone">
+                            ВЫЗОВ: +7 (900) 251-11-54
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <button class="accordion-btn" onclick="toggleAccordion(this)">
+                <span>ПРОЕКТЫ & КАНАЛЫ</span>
+                <span class="arrow">▼</span>
+            </button>
+            <div class="accordion-content">
+                <div class="content-body">
+                    <p style="margin-bottom: 10px;">Обитель хаоса и мультивселенского треша:</p>
+                    
+                    <div class="info-row">
+                        <span class="info-label">Личный Канал:</span>
+                    </div>
+                    <a href="https://t.me/VANOofYOU" target="_blank" class="link-btn btn-tg">
+                        БАРДАК ✈️
                     </a>
+
+                    <div class="info-row" style="margin-top: 12px;">
+                        <span class="info-label">Сообщество RS:</span>
+                    </div>
+                    <div class="grid-buttons-2col">
+                        <a href="https://t.me/CHATRSV2" target="_blank" class="link-btn btn-tg">
+                            ЧАТ RS V2 💬
+                        </a>
+                        <a href="https://t.me/RSHOMEv2" target="_blank" class="link-btn btn-tg">
+                            RS HOME V2 🏠
+                        </a>
+                    </div>
+
+                    <div class="info-row" style="margin-top: 12px;">
+                        <span class="info-label">Discord Сообщество:</span>
+                    </div>
+                    <a href="https://discord.gg/H4wsf9ft5" target="_blank" class="link-btn btn-ds">
+                        DISCORD CHAT 👾
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <button class="accordion-btn" onclick="toggleAccordion(this)">
+                <span>ГЕЙМИНГ // PUBG</span>
+                <span class="arrow">▼</span>
+            </button>
+            <div class="accordion-content">
+                <div class="content-body">
+                    <div class="pubg-card">
+                        <div class="pubg-title">🎮 PUBG MOBILE PROFILE</div>
+                        <div class="info-row">
+                            <span class="info-label">Игровой Ник:</span>
+                            <span class="info-val" style="color: #ffaa00; font-weight: bold; font-size: 1rem;">VANO</span>
+                        </div>
+                        <div class="info-row" style="margin-bottom: 0;">
+                            <span class="info-label">PUBG ID:</span>
+                            <span class="info-val" style="color: #fff; font-size: 0.95rem; letter-spacing: 1px;">62156742804</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -270,9 +427,9 @@
             </button>
             <div class="accordion-content">
                 <div class="content-body">
-                    <p>Стал предельно депрессивным. В этой всратой реальности больше абсолютно ничего не хочется делать. (мысли:чтобы я не делал я никогда не буду щасливым)</p>
+                    <p>самый крутой человек в этом мире</p>
                     <div class="rick-quote">
-                        "Полное экзистенциальное выгорание и 100% ощущение себя Риком Санчезом из измерения C-137. Вселенной на всё похер, всех..."
+                        "Полное экзистенциальное выгорание и 100% ощущение себя Риком Санчезом из измерения C-137. Вселенной на всё похер..."
                     </div>
                 </div>
             </div>
