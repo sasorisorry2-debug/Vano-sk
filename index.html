@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>C-137 // VANO TERMINAL</title>
+<noscript><style>#boot{display:none}.app{opacity:1}</style></noscript>
 <style>
 :root{
   --g:#00ff87; --c:#60efff; --t:#adffcf; --r:#ff0055;
@@ -135,23 +136,44 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--c);outline-offset:2
 .quote{border-left:3px solid var(--r);padding-left:10px;margin-top:12px;color:#ff88a5;font-style:italic;font-size:.88rem;line-height:1.5}
 
 /* Загрузочный экран */
-#boot{position:fixed;inset:0;z-index:10000;background:#000;display:grid;place-items:center;padding:24px;transition:opacity .5s,visibility .5s}
+.app{opacity:0;transition:opacity .5s}
+.ready .app{opacity:1}
+#boot{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.84);display:grid;place-items:center;padding:24px;transition:opacity .6s,visibility .6s}
 #boot.off{opacity:0;visibility:hidden}
-.boot-in{width:100%;max-width:360px}
-#boot-log{min-height:78px;color:var(--g);font-size:.8rem;line-height:1.7;letter-spacing:1px;text-shadow:0 0 6px var(--g);white-space:pre-wrap}
-.bar{height:6px;border:1px solid var(--g);border-radius:4px;overflow:hidden;margin-top:10px}
-.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--g),var(--c));box-shadow:0 0 10px var(--c);transition:width 1.4s cubic-bezier(.5,0,.2,1)}
-.boot-hint{margin-top:12px;color:#3d8f68;font-size:.62rem;letter-spacing:1px;text-align:center}
+.boot-in{position:relative;width:100%;max-width:360px}
+.work{transition:opacity .35s,transform .35s}
+#boot.ok .work{opacity:0;transform:translateY(-10px)}
+#boot-log{min-height:9em;color:var(--g);font-size:.78rem;line-height:1.8;letter-spacing:1px;text-shadow:0 0 6px var(--g);white-space:pre-wrap}
+#boot-log b{color:var(--c);font-weight:900}
+.bar{height:6px;border:1px solid var(--g);border-radius:4px;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;width:100%;transform:scaleX(0);transform-origin:left;background:linear-gradient(90deg,var(--g),var(--c));box-shadow:0 0 10px var(--c)}
+.boot-meta{display:flex;justify-content:space-between;margin-top:6px;color:var(--c);font-size:.68rem;letter-spacing:1px}
+.boot-hint{margin-top:14px;color:#3d8f68;font-size:.62rem;letter-spacing:1px;text-align:center}
+.access{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;opacity:0;pointer-events:none;transition:opacity .35s .15s}
+#boot.ok .access{opacity:1}
+.access svg{width:96px;height:96px;fill:none;stroke:var(--g);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 8px var(--g))}
+.access circle{stroke-dasharray:146;stroke-dashoffset:146}
+.access path{stroke:var(--c);stroke-dasharray:40;stroke-dashoffset:40}
+#boot.ok .access circle{animation:draw .7s cubic-bezier(.4,0,.2,1) .15s forwards}
+#boot.ok .access path{animation:draw .45s cubic-bezier(.4,0,.2,1) .8s forwards}
+#boot.ok .access svg{animation:pop .5s cubic-bezier(.34,1.56,.64,1) 1.2s}
+.access-t{color:var(--g);font-weight:900;letter-spacing:3px;font-size:1rem;text-shadow:0 0 10px var(--g)}
+.access-s{color:#5fb58a;font-size:.7rem;letter-spacing:1px}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pop{50%{transform:scale(1.12)}}
+.status i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--g);margin-right:8px;box-shadow:0 0 8px var(--g);animation:blink 1.6s infinite}
+@keyframes blink{50%{opacity:.25}}
+button,a{touch-action:manipulation}
 
 /* Прорисовка карточки */
 .card{position:relative}
-.ready .panel.on .card{animation:wipe .75s cubic-bezier(.4,0,.2,1) backwards}
+.ready .panel.on .card{animation:wipe 1.1s cubic-bezier(.4,0,.2,1) backwards}
 .ready .panel.on .card::after{
   content:"";position:absolute;top:0;bottom:0;left:0;width:2px;border-radius:2px;pointer-events:none;
-  background:var(--c);box-shadow:0 0 14px 3px var(--c);animation:scan .75s cubic-bezier(.4,0,.2,1) both;
+  background:var(--c);box-shadow:0 0 14px 3px var(--c);animation:scan 1.1s cubic-bezier(.4,0,.2,1) both;
 }
 .ready .panel.on :is(.row,.grid>.btn,.split,.fact,.glabel,.quote,.fail,.sub,.hl){
-  animation:rise .5s cubic-bezier(.22,1,.36,1) backwards;animation-delay:calc(var(--i,0)*70ms + 300ms);
+  animation:rise .7s cubic-bezier(.22,1,.36,1) backwards;animation-delay:calc(var(--i,0)*100ms + 450ms);
 }
 @keyframes wipe{from{clip-path:inset(-20px 100% -20px -20px)}to{clip-path:inset(-20px 0 -20px -20px)}}
 @keyframes scan{from{left:0;opacity:1}to{left:calc(100% - 2px);opacity:0}}
@@ -211,9 +233,17 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--c);outline-offset:2
 
 <div id="boot">
   <div class="boot-in">
-    <div id="boot-log"></div>
-    <div class="bar"><i id="bar"></i></div>
-    <div class="boot-hint">тап — пропустить</div>
+    <div class="work">
+      <div id="boot-log"></div>
+      <div class="bar"><i id="bar"></i></div>
+      <div class="boot-meta"><span id="pct">0%</span><span>ПОРТАЛ C-137</span></div>
+      <div class="boot-hint">тап — пропустить</div>
+    </div>
+    <div class="access" aria-live="polite">
+      <svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="23"/><path d="M15 27 23 35 38 18"/></svg>
+      <div class="access-t">ДОСТУП РАЗРЕШЁН</div>
+      <div class="access-s">все системы в норме</div>
+    </div>
   </div>
 </div>
 <div class="toast" id="toast" role="status"></div>
@@ -252,7 +282,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--c);outline-offset:2
       </button>
       <div class="title" id="title">БИОГРАФИЯ</div>
     </header>
-    <div class="status">[ ПОРТАЛЬНЫЙ ТЕРМИНАЛ АКТИВЕН ]</div>
+    <div class="status"><i></i>[ ПОРТАЛЬНЫЙ ТЕРМИНАЛ АКТИВЕН ]</div>
 
     <div class="stage">
       <!-- БИОГРАФИЯ -->
@@ -392,7 +422,7 @@ function setMenu(open){ app.classList.toggle('open', open); }
 
 function selectTab(btn){
   if (btn.classList.contains('on')) { if(!wide.matches) setMenu(false); return; }
-  btns.forEach(b => b.classList.toggle('on', b === btn));
+  btns.forEach(b => { const on = b === btn; b.classList.toggle('on', on); on ? b.setAttribute('aria-current','page') : b.removeAttribute('aria-current'); });
   movePill(btn);
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
   const panel = document.getElementById(btn.dataset.tab);
@@ -427,6 +457,7 @@ addEventListener('touchend', e => {
 let ac = null;
 function sound(up){
   try{
+    navigator.vibrate && navigator.vibrate(8);
     ac = ac || new (window.AudioContext || window.webkitAudioContext)();
     if (ac.state === 'suspended') ac.resume();
     const t = ac.currentTime, o = ac.createOscillator(), g = ac.createGain();
@@ -441,7 +472,7 @@ function sound(up){
 }
 
 /* ---------- Канвасы ---------- */
-const bg = document.getElementById('bg'), bctx = bg.getContext('2d');
+const bg = document.getElementById('bg'), bctx = bg.getContext('2d', {alpha:false});
 const fx = document.getElementById('fx'), fctx = fx.getContext('2d');
 const CH = '01ABCDEFXYZｦｱｳｴｵｶｷｹｺｻｼｽｾｿﾀﾂﾃﾅﾆﾇﾈﾊﾋﾎﾏﾐﾑﾒﾓﾔﾕﾗﾘﾜ';
 const FS = 16;
@@ -453,8 +484,13 @@ function resize(){
   H = bg.height = fx.height = innerHeight;
   drops = Array.from({length: Math.floor(W / FS)}, () => Math.random() * -50);
   bctx.fillStyle = '#000'; bctx.fillRect(0, 0, W, H);
+  bctx.font = FS + "px 'Courier New',monospace";
 }
-addEventListener('resize', resize);
+let rt;
+addEventListener('resize', () => {
+  clearTimeout(rt);
+  rt = setTimeout(() => { if (innerWidth !== W || Math.abs(innerHeight - H) > 150) resize(); }, 150);
+});
 resize();
 
 /* эффекты тапа */
@@ -462,8 +498,10 @@ const parts = [], rings = [];
 let fxDirty = false;
 
 addEventListener('pointerdown', e => {
-  rings.push({x:e.clientX, y:e.clientY, r:4, max:130, v:5, col:'#00ff87'});
-  rings.push({x:e.clientX, y:e.clientY, r:4, max:80,  v:3, col:'#60efff'});
+  if (rings.length < 8){
+    rings.push({x:e.clientX, y:e.clientY, r:4, max:130, v:5, col:'#00ff87'});
+    rings.push({x:e.clientX, y:e.clientY, r:4, max:80,  v:3, col:'#60efff'});
+  }
   const cols = ['#00ff87','#60efff','#adffcf','#ffffff'];
   for (let i = 0; i < 14 && parts.length < 80; i++){
     const a = Math.random() * 6.283, s = Math.random() * 6 + 2;
@@ -512,7 +550,6 @@ function loop(t){
     last = t;
     bctx.fillStyle = 'rgba(0,0,0,.14)';
     bctx.fillRect(0, 0, W, H);
-    bctx.font = FS + "px 'Courier New',monospace";
     for (let i = 0; i < drops.length; i++){
       const y = drops[i] * FS;
       bctx.fillStyle = Math.random() > .94 ? '#fff' : '#00d870';
@@ -566,29 +603,55 @@ document.addEventListener('click', async e => {
 });
 
 /* ---------- Экран загрузки ---------- */
-const boot = document.getElementById('boot'), blog = document.getElementById('boot-log'), bar = document.getElementById('bar');
-let bootDone = false;
+const boot = document.getElementById('boot'), blog = document.getElementById('boot-log'),
+      bar = document.getElementById('bar'), pct = document.getElementById('pct');
+let bootDone = false, cur = 0;
+
 function finishBoot(){
   if (bootDone) return; bootDone = true;
   document.body.classList.add('ready');
   boot.classList.add('off');
-  setTimeout(() => boot.remove(), 600);
+  setTimeout(() => boot.remove(), 700);
   typeTitle(titleEl.textContent);
+}
+function tween(to, dur){
+  const from = cur, t0 = performance.now();
+  (function f(t){
+    if (bootDone) return;
+    const k = Math.min(1, (t - t0) / dur);
+    cur = from + (to - from) * (1 - Math.pow(1 - k, 3));
+    bar.style.transform = 'scaleX(' + cur + ')';
+    pct.textContent = Math.round(cur * 100) + '%';
+    if (k < 1) requestAnimationFrame(f);
+  })(t0);
 }
 async function runBoot(){
   const sleep = ms => new Promise(r => setTimeout(r, ms));
-  const lines = ['> ИНИЦИАЛИЗАЦИЯ ПОРТАЛА C-137', '> СКАНИРОВАНИЕ ИЗМЕРЕНИЙ... OK', '> ЗАГРУЗКА ПРОФИЛЯ VANO...'];
-  requestAnimationFrame(() => bar.style.width = '100%');
-  for (const l of lines){
-    for (let i = 1; i <= l.length && !bootDone; i++){ blog.textContent = blog.dataset.t + l.slice(0, i); await sleep(10); }
-    blog.dataset.t = (blog.dataset.t || '') + l + '\n';
-    await sleep(110);
+  const steps = [
+    ['ИНИЦИАЛИЗАЦИЯ ПОРТАЛА C-137', .18],
+    ['СКАНИРОВАНИЕ ИЗМЕРЕНИЙ', .38],
+    ['КАЛИБРОВКА ПОРТАЛЬНОЙ ПУШКИ', .58],
+    ['ПРОВЕРКА ДОСТУПА', .8],
+    ['ЗАГРУЗКА ПРОФИЛЯ VANO', 1]
+  ];
+  let hist = '';
+  for (const [name, to] of steps){
+    if (bootDone) return;
+    const line = '> ' + name + '... ';
+    tween(to, 500);
+    for (let i = 1; i <= line.length && !bootDone; i++){ blog.innerHTML = hist + line.slice(0, i); await sleep(10); }
+    hist += line + '<b>OK</b>\n';
+    blog.innerHTML = hist;
+    await sleep(180);
   }
-  await sleep(150);
+  if (bootDone) return;
+  await sleep(250);
+  if (bootDone) return;
+  boot.classList.add('ok');      // галочка «доступ разрешён»
+  await sleep(1900);
   finishBoot();
 }
 boot.addEventListener('pointerdown', finishBoot);
-blog.dataset.t = '';
 if (reduce) finishBoot(); else runBoot();
 </script>
 </body>
