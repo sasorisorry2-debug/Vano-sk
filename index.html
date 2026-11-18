@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>C-137 // VANO TERMINAL</title>
-<noscript><style>#boot{display:none}.app{opacity:1}</style></noscript>
+<noscript><style>#boot,#lang,#lt{display:none}.app{opacity:1}</style></noscript>
 <style>
 :root{
   --g:#00ff87; --c:#60efff; --t:#adffcf; --r:#ff0055;
@@ -18,7 +18,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--c);outline-offset:2
 
 #bg,#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
 #bg{z-index:0}
-#fx{z-index:9999}
+#fx{z-index:10004}
 
 /* Каркас */
 .app{position:relative;z-index:2;display:flex;height:100%}
@@ -215,6 +215,51 @@ button,a{touch-action:manipulation}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 .chip{padding:3px 10px;border-radius:999px;border:1px solid var(--c);color:var(--c);font-size:.72rem;font-weight:bold}
 
+/* Выбор языка */
+#boot.wait{opacity:0;visibility:hidden}
+#lang{position:fixed;inset:0;z-index:10002;background:rgba(0,0,0,.84);display:grid;place-items:center;padding:24px;transition:opacity .4s,visibility .4s}
+#lang.off{opacity:0;visibility:hidden}
+.lang-in{width:100%;max-width:340px;text-align:center}
+.globe{position:relative;width:78px;height:78px;margin:0 auto 18px;color:var(--c)}
+.globe svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;filter:drop-shadow(0 0 6px var(--c))}
+.globe::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--c);animation:ping 2s ease-out infinite}
+@keyframes ping{from{transform:scale(.8);opacity:.8}to{transform:scale(1.6);opacity:0}}
+.lang-t{color:var(--g);font-weight:900;letter-spacing:3px;font-size:1.05rem;text-shadow:0 0 10px var(--g)}
+.lang-s{color:var(--c);font-size:.7rem;letter-spacing:3px;margin:4px 0 14px}
+.lang-opt{
+  display:flex;align-items:center;gap:14px;width:100%;height:66px;margin-top:12px;padding:0 16px;
+  border:2px solid var(--g);border-radius:12px;background:var(--panel);color:var(--g);
+  font-weight:900;letter-spacing:2px;font-size:1rem;box-shadow:0 0 14px rgba(0,255,135,.25);
+  animation:rise .7s cubic-bezier(.22,1,.36,1) backwards;animation-delay:var(--d,0s);
+  transition:transform .15s,border-color .2s,color .2s;
+}
+.lang-opt:hover{border-color:var(--c);color:var(--c)}
+.lang-opt:active{transform:scale(.97)}
+.lang-opt .code{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--c);color:var(--c);font-size:.8rem;background:rgba(96,239,255,.08)}
+
+/* Переключатель языка в меню */
+.lang{padding:0 6px}
+.lang-lbl{display:flex;align-items:center;gap:8px;color:#5fb58a;font-size:.62rem;letter-spacing:1.2px;margin-bottom:8px}
+.lang-lbl svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+.lang-sw{position:relative;display:grid;grid-template-columns:1fr 1fr;height:42px;border:1px solid var(--g);border-radius:10px;background:rgba(0,255,135,.05);overflow:hidden}
+.lang-thumb{position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);border-radius:7px;background:linear-gradient(90deg,rgba(0,255,135,.3),rgba(96,239,255,.22));border:1px solid var(--c);box-shadow:0 0 10px rgba(96,239,255,.35);transition:transform .45s cubic-bezier(.34,1.3,.64,1);will-change:transform}
+.lang-sw[data-l="en"] .lang-thumb{transform:translateX(100%)}
+.lang-sw button{position:relative;z-index:1;font-weight:900;letter-spacing:1.5px;font-size:.8rem;color:#5fb58a;transition:color .25s}
+.lang-sw button.on{color:var(--c)}
+
+/* Переход между языками */
+#lt{position:fixed;inset:0;z-index:10003;visibility:hidden;pointer-events:all;display:grid;place-items:center;text-align:center;background:radial-gradient(circle at 50% 50%,#05311f,#000 72%)}
+.lt-t{font-size:clamp(3.5rem,22vw,6rem);font-weight:900;letter-spacing:6px;color:var(--g);text-shadow:0 0 24px var(--g);opacity:0}
+.lt-t.glitch{animation:glitch .7s steps(1) 1}
+.lt-s{margin-top:8px;color:var(--c);letter-spacing:5px;font-size:.85rem;font-weight:bold;opacity:0}
+@keyframes glitch{
+  0%,100%{text-shadow:0 0 24px var(--g);transform:none}
+  20%{text-shadow:-5px 0 var(--r),5px 0 var(--c);transform:translateX(3px)}
+  40%{text-shadow:5px 0 var(--r),-5px 0 var(--c);transform:translateX(-3px) skewX(-6deg)}
+  60%{text-shadow:0 0 24px var(--g);transform:none}
+  80%{text-shadow:-3px 0 var(--c),3px 0 var(--r);transform:translateX(2px)}
+}
+
 /* Широкий экран: меню закреплено */
 @media (min-width:860px){
   .side{transform:none}
@@ -231,111 +276,130 @@ button,a{touch-action:manipulation}
 <canvas id="bg"></canvas>
 <canvas id="fx"></canvas>
 
-<div id="boot">
+<div id="boot" class="wait">
   <div class="boot-in">
     <div class="work">
       <div id="boot-log"></div>
       <div class="bar"><i id="bar"></i></div>
-      <div class="boot-meta"><span id="pct">0%</span><span>ПОРТАЛ C-137</span></div>
-      <div class="boot-hint">тап — пропустить</div>
+      <div class="boot-meta"><span id="pct">0%</span><span data-i="boot_portal">ПОРТАЛ C-137</span></div>
+      <div class="boot-hint" data-i="boot_hint">тап — пропустить</div>
     </div>
     <div class="access" aria-live="polite">
       <svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="23"/><path d="M15 27 23 35 38 18"/></svg>
-      <div class="access-t">ДОСТУП РАЗРЕШЁН</div>
-      <div class="access-s">все системы в норме</div>
+      <div class="access-t" data-i="acc_t">ДОСТУП РАЗРЕШЁН</div>
+      <div class="access-s" data-i="acc_s">все системы в норме</div>
     </div>
   </div>
 </div>
 <div class="toast" id="toast" role="status"></div>
 
+<div id="lang">
+  <div class="lang-in">
+    <div class="globe"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></div>
+    <div class="lang-t">ВЫБЕРИТЕ ЯЗЫК</div>
+    <div class="lang-s">CHOOSE YOUR LANGUAGE</div>
+    <button class="lang-opt" data-lang="ru" style="--d:.35s"><span class="code">RU</span><span>РУССКИЙ</span></button>
+    <button class="lang-opt" data-lang="en" style="--d:.5s"><span class="code">EN</span><span>ENGLISH</span></button>
+  </div>
+</div>
+<div id="lt"><div><div class="lt-t" id="lt-t"></div><div class="lt-s" id="lt-s"></div></div></div>
+
 <div class="app" id="app">
-  <aside class="side" id="side" aria-label="Меню">
+  <aside class="side" id="side" data-ia="menu" aria-label="Меню">
     <div class="brand">
       <div class="logo">C137</div>
-      <div><b>VANO</b><small>ПОРТАЛЬНЫЙ ТЕРМИНАЛ</small></div>
+      <div><b>VANO</b><small data-i="brand_sub">ПОРТАЛЬНЫЙ ТЕРМИНАЛ</small></div>
     </div>
 
     <nav class="nav" id="nav">
       <div class="pill" id="pill"></div>
       <button class="nav-btn on" data-tab="bio">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>БИОГРАФИЯ
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg><span data-i="nav_bio">БИОГРАФИЯ</span>
       </button>
       <button class="nav-btn" data-tab="contacts">
-        <svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1.2-4.6A8 8 0 1 1 21 12z"/><path d="M9 11h6M9 14h4"/></svg>КОНТАКТЫ
+        <svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1.2-4.6A8 8 0 1 1 21 12z"/><path d="M9 11h6M9 14h4"/></svg><span data-i="nav_contacts">КОНТАКТЫ</span>
       </button>
       <button class="nav-btn" data-tab="projects">
-        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>ПРОЕКТЫ
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span data-i="nav_projects">ПРОЕКТЫ</span>
       </button>
       <button class="nav-btn" data-tab="facts">
-        <svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>ФАКТЫ
+        <svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span data-i="nav_facts">ФАКТЫ</span>
       </button>
     </nav>
 
     <div class="side-foot">DIMENSION C-137</div>
+    <div class="lang">
+      <div class="lang-lbl"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg><span data-i="lang_lbl">ЯЗЫК</span></div>
+      <div class="lang-sw" id="langSw" data-l="ru">
+        <i class="lang-thumb"></i>
+        <button data-lang="ru" class="on">RU</button>
+        <button data-lang="en">EN</button>
+      </div>
+    </div>
   </aside>
   <div class="scrim" id="scrim"></div>
 
   <main class="main">
     <header class="top">
-      <button class="burger" id="burger" aria-label="Открыть меню">
+      <button class="burger" id="burger" data-ia="open_menu" aria-label="Открыть меню">
         <svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
       </button>
       <div class="title" id="title">БИОГРАФИЯ</div>
     </header>
-    <div class="status"><i></i>[ ПОРТАЛЬНЫЙ ТЕРМИНАЛ АКТИВЕН ]</div>
+    <div class="status"><i></i><span data-i="status">[ ПОРТАЛЬНЫЙ ТЕРМИНАЛ АКТИВЕН ]</span></div>
 
     <div class="stage">
       <!-- БИОГРАФИЯ -->
-      <section class="panel on" id="bio" data-title="БИОГРАФИЯ">
+      <section class="panel on" id="bio" data-title="nav_bio">
         <div class="card">
           <div class="card-head">
             <div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></div>
-            <div><h2>VANO // C-137</h2><p>досье объекта</p></div>
+            <div><h2>VANO // C-137</h2><p data-i="bio_sub">досье объекта</p></div>
           </div>
-          <div class="row"><span class="lbl">Идентификатор объекта:</span><span class="info-val">Иван (VANO)</span></div>
-          <div class="row"><span class="lbl">Возраст:</span><span class="info-val">19 лет</span></div>
-          <div class="row"><span class="lbl">Дислокация:</span><span class="info-val">Россия ➔ Абхазия</span></div>
-          <div class="row"><span class="lbl">Статус:</span><span class="info-val">Да я, может, и не плохой человек, но добрым быть я не намерен.</span></div>
-          <div class="row"><span class="lbl">Сейчас:</span><span class="info-val">Участник RS, создатель канала «Бардак V2»</span></div>
-          <span class="fail">СИСТЕМА СЛОМАНА</span>
+          <div class="row"><span class="lbl" data-i="b_id">Идентификатор объекта:</span><span class="info-val" data-i="b_idv">Иван (VANO)</span></div>
+          <div class="row"><span class="lbl" data-i="b_age">Возраст:</span><span class="info-val" data-i="b_agev">19 лет</span></div>
+          <div class="row"><span class="lbl" data-i="b_loc">Дислокация:</span><span class="info-val" data-i="b_locv">Россия ➔ Абхазия</span></div>
+          <div class="row"><span class="lbl" data-i="b_st">Статус:</span><span class="info-val" data-i="b_stv">Да я, может, и не плохой человек, но добрым быть я не намерен.</span></div>
+          <div class="row"><span class="lbl" data-i="b_now">Сейчас:</span><span class="info-val" data-i="b_nowv">Участник RS, создатель канала «Бардак V2»</span></div>
+          <span class="fail" data-i="b_fail">СИСТЕМА СЛОМАНА</span>
         </div>
       </section>
 
       <!-- КОНТАКТЫ -->
-      <section class="panel" id="contacts" data-title="КОНТАКТЫ">
+      <section class="panel" id="contacts" data-title="nav_contacts">
         <div class="card">
           <div class="card-head">
             <div class="ico"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1.2-4.6A8 8 0 1 1 21 12z"/><path d="M9 11h6M9 14h4"/></svg></div>
-            <div><h2>КОНТАКТЫ &amp; СВЯЗЬ</h2><p>каналы связи</p></div>
+            <div><h2 data-i="c_h">КОНТАКТЫ &amp; СВЯЗЬ</h2><p data-i="c_sub">каналы связи</p></div>
           </div>
-          <div class="row"><span class="lbl">Телефон / Max:</span>
+          <div class="row"><span class="lbl" data-i="c_ph">Телефон / Max:</span>
             <div class="line"><span class="info-val">+7 (900) 251-11-54</span>
-              <button class="copy" data-copy="+79002511154" aria-label="Скопировать номер"><svg class="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><svg class="i-ok" viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19 7"/></svg></button></div>
+              <button class="copy" data-copy="+79002511154" data-ia="copy" aria-label="Скопировать"><svg class="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><svg class="i-ok" viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19 7"/></svg></button></div>
             <div class="line"><span class="info-val">+7 (940) 942-10-77</span>
-              <button class="copy" data-copy="+79409421077" aria-label="Скопировать номер"><svg class="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><svg class="i-ok" viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19 7"/></svg></button></div></div>
+              <button class="copy" data-copy="+79409421077" data-ia="copy" aria-label="Скопировать"><svg class="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><svg class="i-ok" viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19 7"/></svg></button></div></div>
           <div class="row"><span class="lbl">Email:</span>
             <div class="line"><span class="info-val" style="color:var(--c)">Sasorisorry2@gmail.com</span>
-              <button class="copy" data-copy="Sasorisorry2@gmail.com" aria-label="Скопировать почту"><svg class="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><svg class="i-ok" viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19 7"/></svg></button></div></div>
+              <button class="copy" data-copy="Sasorisorry2@gmail.com" data-ia="copy" aria-label="Скопировать"><svg class="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><svg class="i-ok" viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19 7"/></svg></button></div></div>
           <div class="row"><span class="lbl">Discord ID:</span>
             <div class="line"><span class="info-val" style="color:#a5b4fc">liptonchiks</span>
-              <button class="copy" data-copy="liptonchiks" aria-label="Скопировать Discord ID"><svg class="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><svg class="i-ok" viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19 7"/></svg></button></div></div>
+              <button class="copy" data-copy="liptonchiks" data-ia="copy" aria-label="Скопировать"><svg class="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><svg class="i-ok" viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19 7"/></svg></button></div></div>
 
-          <span class="lbl sub" style="display:block">Мессенджеры &amp; соцсети:</span>
+          <span class="lbl sub" style="display:block" data-i="c_soc">Мессенджеры &amp; соцсети:</span>
           <div class="grid">
             <div class="split">
               <a class="btn tg" href="https://t.me/VANO_S7" target="_blank" rel="noopener">
                 <svg viewBox="0 0 24 24"><path d="M21 4 3 11l5 2 2 6 3-4 5 4z"/></svg>@VANO_S7</a>
-              <button class="copy" data-copy="@VANO_S7" aria-label="Скопировать ник"><svg class="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><svg class="i-ok" viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19 7"/></svg></button>
+              <button class="copy" data-copy="@VANO_S7" data-ia="copy" aria-label="Скопировать"><svg class="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><svg class="i-ok" viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19 7"/></svg></button>
             </div>
             <div class="split">
               <a class="btn tg" href="https://t.me/The_Russian_snowman" target="_blank" rel="noopener">
                 <svg viewBox="0 0 24 24"><path d="M21 4 3 11l5 2 2 6 3-4 5 4z"/></svg>@The_Russian_snowman</a>
-              <button class="copy" data-copy="@The_Russian_snowman" aria-label="Скопировать ник"><svg class="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><svg class="i-ok" viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19 7"/></svg></button>
+              <button class="copy" data-copy="@The_Russian_snowman" data-ia="copy" aria-label="Скопировать"><svg class="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><svg class="i-ok" viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19 7"/></svg></button>
             </div>
           </div>
           <div class="grid">
             <a class="btn vk" href="https://vk.com/id686629083" target="_blank" rel="noopener">
-              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 9c.5 3 2 5 4 5v-5m0 3c2 0 3-2 4-3"/></svg>ВКОНТАКТЕ</a>
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 9c.5 3 2 5 4 5v-5m0 3c2 0 3-2 4-3"/></svg><span data-i="c_vk">ВКОНТАКТЕ</span></a>
             <a class="btn wa" href="https://wa.me/79002511154" target="_blank" rel="noopener">
               <svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1.2-4.6A8 8 0 1 1 21 12z"/></svg>WHATSAPP</a>
             <a class="btn ph" href="tel:+79002511154">
@@ -345,28 +409,28 @@ button,a{touch-action:manipulation}
       </section>
 
       <!-- ПРОЕКТЫ -->
-      <section class="panel" id="projects" data-title="ПРОЕКТЫ">
+      <section class="panel" id="projects" data-title="nav_projects">
         <div class="card">
           <div class="card-head">
             <div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
-            <div><h2>ПРОЕКТЫ &amp; КАНАЛЫ</h2><p>обитель хаоса и мультивселенского треша</p></div>
+            <div><h2 data-i="p_h">ПРОЕКТЫ &amp; КАНАЛЫ</h2><p data-i="p_sub">обитель хаоса и мультивселенского треша</p></div>
           </div>
 
-          <span class="lbl">Личный канал:</span>
+          <span class="lbl" data-i="p_own">Личный канал:</span>
           <div class="grid">
             <a class="btn tg" href="https://t.me/VANOofYOU" target="_blank" rel="noopener">
-              <svg viewBox="0 0 24 24"><path d="M21 4 3 11l5 2 2 6 3-4 5 4z"/></svg>БАРДАК</a>
+              <svg viewBox="0 0 24 24"><path d="M21 4 3 11l5 2 2 6 3-4 5 4z"/></svg><span data-i="p_bard">БАРДАК</span></a>
           </div>
 
-          <span class="lbl sub" style="display:block">Сообщество RS:</span>
+          <span class="lbl sub" style="display:block" data-i="p_rs">Сообщество RS:</span>
           <div class="grid two">
             <a class="btn tg" href="https://t.me/+J42kP31w3Ns4MjFi" target="_blank" rel="noopener">
-              <svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1.2-4.6A8 8 0 1 1 21 12z"/></svg>ЧАТ RS V2</a>
+              <svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1.2-4.6A8 8 0 1 1 21 12z"/></svg><span data-i="p_chat">ЧАТ RS V2</span></a>
             <a class="btn tg" href="https://t.me/RSHOMEv2" target="_blank" rel="noopener">
               <svg viewBox="0 0 24 24"><path d="M3 11 12 3l9 8M5 10v10h14V10"/></svg>RS HOME V2</a>
           </div>
 
-          <span class="lbl sub" style="display:block">Discord сообщество:</span>
+          <span class="lbl sub" style="display:block" data-i="p_ds">Discord сообщество:</span>
           <div class="grid">
             <a class="btn ds" href="https://discord.gg/H4wsf9ft5" target="_blank" rel="noopener">
               <svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="11" rx="4"/><circle cx="9" cy="12.5" r="1"/><circle cx="15" cy="12.5" r="1"/></svg>DISCORD CHAT</a>
@@ -375,31 +439,31 @@ button,a{touch-action:manipulation}
       </section>
 
       <!-- ФАКТЫ -->
-      <section class="panel" id="facts" data-title="ФАКТЫ">
+      <section class="panel" id="facts" data-title="nav_facts">
         <div class="card">
           <div class="card-head">
             <div class="ico"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div>
-            <div><h2>ФАКТЫ</h2><p>проверено в 137 вселенных</p></div>
+            <div><h2 data-i="f_h">ФАКТЫ</h2><p data-i="f_sub">проверено в 137 вселенных</p></div>
           </div>
-          <div class="hl">Самый крутой человек в этом мире</div>
+          <div class="hl" data-i="f_hl">Самый крутой человек в этом мире</div>
 
-          <span class="glabel">Вкусы</span>
-          <div class="fact"><span class="fi"><svg viewBox="0 0 24 24"><circle cx="10" cy="9" r="5.5"/><path d="M10 6.5a2.5 2.5 0 0 1 2.5 2.5M14 13l6 7"/></svg></span><span>Любитель сладкого</span></div>
+          <span class="glabel" data-i="f_g1">Вкусы</span>
+          <div class="fact"><span class="fi"><svg viewBox="0 0 24 24"><circle cx="10" cy="9" r="5.5"/><path d="M10 6.5a2.5 2.5 0 0 1 2.5 2.5M14 13l6 7"/></svg></span><span data-i="f_sweet">Любитель сладкого</span></div>
           <div class="fact"><span class="fi"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span>
-            <div>Любимые энергетики<div class="chips"><span class="chip">Burn</span><span class="chip">Red Bull</span><span class="chip">Adrenaline</span></div></div></div>
-          <div class="fact"><span class="fi"><svg viewBox="0 0 24 24"><path d="M6 3v7a2 2 0 0 0 2 2v9M10 3v7a2 2 0 0 1-2 2M17 3c-2 1.5-3 4-3 7h3v11"/></svg></span><span>Любитель вкусной еды</span></div>
+            <div><span data-i="f_energy">Любимые энергетики</span><div class="chips"><span class="chip">Burn</span><span class="chip">Red Bull</span><span class="chip">Adrenaline</span></div></div></div>
+          <div class="fact"><span class="fi"><svg viewBox="0 0 24 24"><path d="M6 3v7a2 2 0 0 0 2 2v9M10 3v7a2 2 0 0 1-2 2M17 3c-2 1.5-3 4-3 7h3v11"/></svg></span><span data-i="f_food">Любитель вкусной еды</span></div>
 
-          <span class="glabel">Не моё</span>
-          <div class="fact no"><span class="fi"><svg viewBox="0 0 24 24"><path d="M8 3h8l-.5 6a3.5 3.5 0 0 1-7 0zM12 12.5V20M8.5 20h7"/><path d="M4 4l16 16"/></svg></span><span>Не любитель алкоголя</span></div>
-          <div class="fact no"><span class="fi"><svg viewBox="0 0 24 24"><path d="M3 15h13v3H3zM19 15v3M22 15v3"/><path d="M4 4l16 16"/></svg></span><span>Не любитель табака и подобной продукции</span></div>
+          <span class="glabel" data-i="f_g2">Не моё</span>
+          <div class="fact no"><span class="fi"><svg viewBox="0 0 24 24"><path d="M8 3h8l-.5 6a3.5 3.5 0 0 1-7 0zM12 12.5V20M8.5 20h7"/><path d="M4 4l16 16"/></svg></span><span data-i="f_alc">Не любитель алкоголя</span></div>
+          <div class="fact no"><span class="fi"><svg viewBox="0 0 24 24"><path d="M3 15h13v3H3zM19 15v3M22 15v3"/><path d="M4 4l16 16"/></svg></span><span data-i="f_tob">Не любитель табака и подобной продукции</span></div>
 
-          <span class="glabel">Характер и навыки</span>
-          <div class="fact"><span class="fi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M14.5 9.2c-.6-.8-1.5-1.2-2.5-1.2-1.4 0-2.5.7-2.5 1.8 0 2.6 5 1.2 5 3.8 0 1.1-1.1 1.9-2.5 1.9-1.1 0-2-.5-2.6-1.3M12 6.5V8M12 16v1.5"/></svg></span><span>Скупердяй</span></div>
-          <div class="fact"><span class="fi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></svg></span><span>Ленивый, но ответственный</span></div>
-          <div class="fact"><span class="fi"><svg viewBox="0 0 24 24"><path d="M3 11 12 3l9 8M5 10v10h14V10M10 20v-6h4v6"/></svg></span><span>Умею готовить и справляться с бытом</span></div>
-          <div class="fact"><span class="fi"><svg viewBox="0 0 24 24"><path d="M12 3 3 8l9 5 9-5zM3 13l9 5 9-5"/></svg></span><span>Могу скопировать любую профессию</span></div>
+          <span class="glabel" data-i="f_g3">Характер и навыки</span>
+          <div class="fact"><span class="fi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M14.5 9.2c-.6-.8-1.5-1.2-2.5-1.2-1.4 0-2.5.7-2.5 1.8 0 2.6 5 1.2 5 3.8 0 1.1-1.1 1.9-2.5 1.9-1.1 0-2-.5-2.6-1.3M12 6.5V8M12 16v1.5"/></svg></span><span data-i="f_cheap">Скупердяй</span></div>
+          <div class="fact"><span class="fi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></svg></span><span data-i="f_lazy">Ленивый, но ответственный</span></div>
+          <div class="fact"><span class="fi"><svg viewBox="0 0 24 24"><path d="M3 11 12 3l9 8M5 10v10h14V10M10 20v-6h4v6"/></svg></span><span data-i="f_cook">Умею готовить и справляться с бытом</span></div>
+          <div class="fact"><span class="fi"><svg viewBox="0 0 24 24"><path d="M12 3 3 8l9 5 9-5zM3 13l9 5 9-5"/></svg></span><span data-i="f_prof">Могу скопировать любую профессию</span></div>
 
-          <div class="quote">"Полное экзистенциальное выгорание и 100% ощущение себя Риком Санчезом из измерения C-137. Вселенной на всё похер..."</div>
+          <div class="quote" data-i="f_quote">"Полное экзистенциальное выгорание и 100% ощущение себя Риком Санчезом из измерения C-137. Вселенной на всё похер..."</div>
         </div>
       </section>
     </div>
@@ -427,7 +491,7 @@ function selectTab(btn){
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
   const panel = document.getElementById(btn.dataset.tab);
   panel.classList.add('on');
-  typeTitle(panel.dataset.title);
+  typeTitle(t(panel.dataset.title));
   panel.parentElement.scrollTop = 0;
   sound(true);
   if (!wide.matches) setTimeout(() => setMenu(false), 220);
@@ -597,9 +661,9 @@ document.addEventListener('click', async e => {
   const b = e.target.closest('.copy'); if (!b) return;
   const v = b.dataset.copy;
   if (await copyText(v)){
-    b.classList.add('done'); sound(true); toast('Скопировано: ' + v);
+    b.classList.add('done'); sound(true); toast(t('copied') + v);
     setTimeout(() => b.classList.remove('done'), 1400);
-  } else toast('Не удалось скопировать');
+  } else toast(t('copyfail'));
 });
 
 /* ---------- Экран загрузки ---------- */
@@ -612,7 +676,7 @@ function finishBoot(){
   document.body.classList.add('ready');
   boot.classList.add('off');
   setTimeout(() => boot.remove(), 700);
-  typeTitle(titleEl.textContent);
+  typeTitle(curTitle());
 }
 function tween(to, dur){
   const from = cur, t0 = performance.now();
@@ -627,13 +691,8 @@ function tween(to, dur){
 }
 async function runBoot(){
   const sleep = ms => new Promise(r => setTimeout(r, ms));
-  const steps = [
-    ['ИНИЦИАЛИЗАЦИЯ ПОРТАЛА C-137', .18],
-    ['СКАНИРОВАНИЕ ИЗМЕРЕНИЙ', .38],
-    ['КАЛИБРОВКА ПОРТАЛЬНОЙ ПУШКИ', .58],
-    ['ПРОВЕРКА ДОСТУПА', .8],
-    ['ЗАГРУЗКА ПРОФИЛЯ VANO', 1]
-  ];
+  const prog = [.18, .38, .58, .8, 1];
+  const steps = DICT[lang].steps.map((n, k) => [n, prog[k]]);
   let hist = '';
   for (const [name, to] of steps){
     if (bootDone) return;
@@ -652,7 +711,129 @@ async function runBoot(){
   finishBoot();
 }
 boot.addEventListener('pointerdown', finishBoot);
-if (reduce) finishBoot(); else runBoot();
+
+/* ---------- Языки ---------- */
+const DICT = {
+ ru:{
+  native:'РУССКИЙ',
+  nav_bio:'БИОГРАФИЯ',nav_contacts:'КОНТАКТЫ',nav_projects:'ПРОЕКТЫ',nav_facts:'ФАКТЫ',
+  brand_sub:'ПОРТАЛЬНЫЙ ТЕРМИНАЛ',status:'[ ПОРТАЛЬНЫЙ ТЕРМИНАЛ АКТИВЕН ]',lang_lbl:'ЯЗЫК',
+  bio_sub:'досье объекта',b_id:'Идентификатор объекта:',b_idv:'Иван (VANO)',b_age:'Возраст:',b_agev:'19 лет',
+  b_loc:'Дислокация:',b_locv:'Россия ➔ Абхазия',b_st:'Статус:',
+  b_stv:'Да я, может, и не плохой человек, но добрым быть я не намерен.',
+  b_now:'Сейчас:',b_nowv:'Участник RS, создатель канала «Бардак V2»',b_fail:'СИСТЕМА СЛОМАНА',
+  c_h:'КОНТАКТЫ & СВЯЗЬ',c_sub:'каналы связи',c_ph:'Телефон / Max:',c_soc:'Мессенджеры & соцсети:',c_vk:'ВКОНТАКТЕ',
+  p_h:'ПРОЕКТЫ & КАНАЛЫ',p_sub:'обитель хаоса и мультивселенского треша',p_own:'Личный канал:',p_bard:'БАРДАК',
+  p_rs:'Сообщество RS:',p_chat:'ЧАТ RS V2',p_ds:'Discord сообщество:',
+  f_h:'ФАКТЫ',f_sub:'проверено в 137 вселенных',f_hl:'Самый крутой человек в этом мире',
+  f_g1:'Вкусы',f_g2:'Не моё',f_g3:'Характер и навыки',
+  f_sweet:'Любитель сладкого',f_energy:'Любимые энергетики',f_food:'Любитель вкусной еды',
+  f_alc:'Не любитель алкоголя',f_tob:'Не любитель табака и подобной продукции',
+  f_cheap:'Скупердяй',f_lazy:'Ленивый, но ответственный',f_cook:'Умею готовить и справляться с бытом',
+  f_prof:'Могу скопировать любую профессию',
+  f_quote:'"Полное экзистенциальное выгорание и 100% ощущение себя Риком Санчезом из измерения C-137. Вселенной на всё похер..."',
+  boot_portal:'ПОРТАЛ C-137',boot_hint:'тап — пропустить',acc_t:'ДОСТУП РАЗРЕШЁН',acc_s:'все системы в норме',
+  steps:['ИНИЦИАЛИЗАЦИЯ ПОРТАЛА C-137','СКАНИРОВАНИЕ ИЗМЕРЕНИЙ','КАЛИБРОВКА ПОРТАЛЬНОЙ ПУШКИ','ПРОВЕРКА ДОСТУПА','ЗАГРУЗКА ПРОФИЛЯ VANO'],
+  copied:'Скопировано: ',copyfail:'Не удалось скопировать',open_menu:'Открыть меню',menu:'Меню',copy:'Скопировать'
+ },
+ en:{
+  native:'ENGLISH',
+  nav_bio:'BIOGRAPHY',nav_contacts:'CONTACTS',nav_projects:'PROJECTS',nav_facts:'FACTS',
+  brand_sub:'PORTAL TERMINAL',status:'[ PORTAL TERMINAL ONLINE ]',lang_lbl:'LANGUAGE',
+  bio_sub:'subject file',b_id:'Subject ID:',b_idv:'Ivan (VANO)',b_age:'Age:',b_agev:'19 years old',
+  b_loc:'Location:',b_locv:'Russia ➔ Abkhazia',b_st:'Status:',
+  b_stv:'Maybe I’m not a bad person, but I have no intention of being kind.',
+  b_now:'Now:',b_nowv:'Member of RS, creator of the “Bardak V2” channel',b_fail:'SYSTEM BROKEN',
+  c_h:'CONTACTS & CONNECT',c_sub:'communication channels',c_ph:'Phone / Max:',c_soc:'Messengers & socials:',c_vk:'VKONTAKTE',
+  p_h:'PROJECTS & CHANNELS',p_sub:'a den of chaos and multiverse trash',p_own:'Personal channel:',p_bard:'BARDAK',
+  p_rs:'RS community:',p_chat:'RS V2 CHAT',p_ds:'Discord community:',
+  f_h:'FACTS',f_sub:'verified across 137 universes',f_hl:'The coolest person in this world',
+  f_g1:'Tastes',f_g2:'Not my thing',f_g3:'Character & skills',
+  f_sweet:'Sweet tooth',f_energy:'Favorite energy drinks',f_food:'Lover of tasty food',
+  f_alc:'Not a fan of alcohol',f_tob:'Not a fan of tobacco and similar products',
+  f_cheap:'Penny-pincher',f_lazy:'Lazy, but responsible',f_cook:'Can cook and handle household chores',
+  f_prof:'Can copy any profession',
+  f_quote:'“Total existential burnout and a 100% feeling of being Rick Sanchez from dimension C-137. The universe couldn’t care less...”',
+  boot_portal:'PORTAL C-137',boot_hint:'tap to skip',acc_t:'ACCESS GRANTED',acc_s:'all systems nominal',
+  steps:['INITIALIZING PORTAL C-137','SCANNING DIMENSIONS','CALIBRATING PORTAL GUN','VERIFYING ACCESS','LOADING PROFILE VANO'],
+  copied:'Copied: ',copyfail:'Copy failed',open_menu:'Open menu',menu:'Menu',copy:'Copy'
+ }
+};
+let lang = 'ru';
+const t = k => DICT[lang][k];
+const curTitle = () => t(document.querySelector('.panel.on').dataset.title);
+const langSw = document.getElementById('langSw');
+
+function setLang(l){
+  lang = l;
+  document.documentElement.lang = l;
+  document.querySelectorAll('[data-i]').forEach(el => { el.textContent = DICT[l][el.dataset.i]; });
+  document.querySelectorAll('[data-ia]').forEach(el => el.setAttribute('aria-label', DICT[l][el.dataset.ia]));
+  langSw.dataset.l = l;
+  langSw.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.lang === l));
+  typeTitle(curTitle());
+}
+function replay(){
+  const p = document.querySelector('.panel.on');
+  p.classList.remove('on'); void p.offsetWidth; p.classList.add('on');
+}
+
+/* Анимация перехода: круг расширяется из точки нажатия, показывается код языка с глитчем */
+const LT = document.getElementById('lt'), LTT = document.getElementById('lt-t'), LTS = document.getElementById('lt-s');
+const wait = ms => new Promise(r => setTimeout(r, ms));
+async function langTransition(code, x, y, mid, reveal){
+  if (reduce){ mid(); reveal && reveal(); return; }
+  LTT.textContent = code.toUpperCase();
+  LTS.textContent = DICT[code].native;
+  LTT.style.opacity = 0; LTS.style.opacity = 0;
+  LT.style.visibility = 'visible';
+  const r = Math.hypot(Math.max(x, W - x), Math.max(y, H - y)) + 20;
+  await LT.animate(
+    [{clipPath:`circle(0px at ${x}px ${y}px)`}, {clipPath:`circle(${r}px at ${x}px ${y}px)`}],
+    {duration:560, easing:'cubic-bezier(.65,0,.35,1)', fill:'forwards'}
+  ).finished;
+  mid();
+  LTT.classList.add('glitch');
+  LTT.animate([{opacity:0, transform:'scale(.7)'}, {opacity:1, transform:'scale(1)'}],
+    {duration:380, easing:'cubic-bezier(.34,1.56,.64,1)', fill:'forwards'});
+  LTS.animate([{opacity:0}, {opacity:1}], {duration:380, delay:120, fill:'both'});
+  await wait(800);
+  reveal && reveal();
+  await LT.animate([{opacity:1}, {opacity:0}], {duration:450, fill:'forwards'}).finished;
+  [LT, LTT, LTS].forEach(el => el.getAnimations().forEach(a => a.cancel()));
+  LTT.classList.remove('glitch');
+  LT.style.visibility = 'hidden';
+}
+
+/* Первый выбор языка */
+const langScreen = document.getElementById('lang');
+let picking = false;
+langScreen.addEventListener('click', async e => {
+  const b = e.target.closest('.lang-opt'); if (!b || picking) return;
+  picking = true; sound(true);
+  const rc = b.getBoundingClientRect();
+  await langTransition(b.dataset.lang, rc.left + rc.width / 2, rc.top + rc.height / 2, () => {
+    setLang(b.dataset.lang);
+    langScreen.classList.add('off');
+    boot.classList.remove('wait');
+    setTimeout(() => langScreen.remove(), 700);
+  });
+  if (reduce) finishBoot(); else runBoot();
+});
+
+/* Смена языка из бокового меню */
+let switching = false;
+langSw.addEventListener('click', async e => {
+  const b = e.target.closest('button');
+  if (!b || switching || b.dataset.lang === lang) return;
+  switching = true; sound(true);
+  const rc = b.getBoundingClientRect();
+  await langTransition(b.dataset.lang, rc.left + rc.width / 2, rc.top + rc.height / 2,
+    () => { setLang(b.dataset.lang); if (!wide.matches) setMenu(false); },
+    replay);
+  switching = false;
+});
+setLang('ru');
 </script>
 </body>
 </html>
